@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-e2e
+playwright-report
+test-results
+e2e/fixtures/generated
+.env
+.env.local
+*.log
+.DS_Store
