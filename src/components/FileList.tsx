@@ -25,7 +25,7 @@ export function FileList({ files, onRemove, onClear }: FileListProps) {
             <span className="min-w-0 flex-1 truncate text-sm text-slate-200" title={file.name}>
               {file.name}
             </span>
-            <span className="text-xs text-slate-500">{formatBytes(file.size)}</span>
+            <span className="text-xs text-slate-400">{formatBytes(file.size)}</span>
             <button
               type="button"
               onClick={() => onRemove(index)}

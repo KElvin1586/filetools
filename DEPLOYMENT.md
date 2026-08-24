@@ -51,7 +51,7 @@ Copy `dist/` to your web root. Example nginx snippet:
 ```nginx
 server {
   listen 443 ssl;
-  server_name filetools.example.com;
+  server_name filetools.your-domain.com;
   root /var/www/filetools/dist;
 
   location / {

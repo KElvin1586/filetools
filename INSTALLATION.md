@@ -30,8 +30,8 @@ cp .env.example .env
 | --- | --- | --- |
 | `VITE_PREMIUM_PRICE` | `9.99` | One-time Premium price shown in UI |
 | `VITE_PREMIUM_CURRENCY` | `USD` | Any ISO-4217 code (EUR, GBP, …) |
-| `VITE_UPGRADE_URL` | `https://example.com/filetools/upgrade` | Your external checkout/landing page |
-| `VITE_LICENSE_KEY` | `FILETOOLS-PREMIUM` | Key that unlocks Premium. **Change it** — it ships with the client bundle. |
+| `VITE_UPGRADE_URL` | *(unset)* | Your real checkout page; unset = Upgrade button shows a plain "not configured" notice, never a placeholder link |
+| `VITE_PREMIUM_LICENSE_KEY` | `FILETOOLS-PREMIUM` | Key that unlocks Premium. **Change it** — it ships with the client bundle. |
 | `VITE_MAX_FILE_MB` | `50` | Per-file size limit |
 | `VITE_MAX_BATCH_FILES` | `50` | Premium batch cap |
 | `VITE_FREE_PDF_IMAGES_LIMIT` | `5` | Free images→PDF pages |
@@ -89,7 +89,7 @@ src/
     history.ts         job history model + persistence
     storage.ts         typed localStorage wrapper
   state/               React context providers (entitlement, history)
-  components/          UI primitives (DropZone, UpgradeModal, PremiumGate, …)
+  components/          UI primitives (DropZone, UpgradeModal, PremiumGate, TestCheckoutPage, …)
   tools/               one screen per tool
   test/                unit tests
 e2e/                   Playwright specs + generated fixtures

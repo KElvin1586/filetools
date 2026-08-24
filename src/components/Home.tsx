@@ -159,11 +159,17 @@ export function Home({ onOpenTool }: HomeProps) {
             )}
           </div>
         </div>
-        <p className="mt-4 text-center text-xs text-slate-500">
-          Payments are handled on our external checkout page:{' '}
-          <a href={config.upgradeUrl} target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">
-            {config.upgradeUrl.replace(/^https?:\/\//, '')}
-          </a>
+        <p className="mt-4 text-center text-xs text-slate-400">
+          {config.upgradeUrl ? (
+            <>
+              Payments are handled on the external checkout page:{' '}
+              <a href={config.upgradeUrl} target="_blank" rel="noopener noreferrer" className="text-sky-400 underline underline-offset-2 hover:text-sky-300">
+                {config.upgradeUrl.replace(/^https?:\/\//, '')}
+              </a>
+            </>
+          ) : (
+            'Checkout URL is not configured for this deployment yet — the Upgrade button will become active once the owner sets VITE_UPGRADE_URL.'
+          )}
         </p>
       </section>
     </div>

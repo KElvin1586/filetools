@@ -110,7 +110,7 @@ export function DropZone({
       >
         <svg
           aria-hidden="true"
-          className="mb-3 h-10 w-10 text-slate-500"
+          className="mb-3 h-10 w-10 text-slate-400"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -125,7 +125,7 @@ export function DropZone({
         <p className="text-sm font-medium text-slate-200">
           {label ?? `Drag & drop ${batch ? 'files' : `a ${kindLabel}`} here, or click to browse`}
         </p>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-slate-400">
           {hint ??
             `${accept.join(', ')} · up to ${formatBytes(config.maxFileSizeBytes, 0)} per file${
               batch && !isPremium ? ' · batch is Premium' : ''
@@ -137,6 +137,7 @@ export function DropZone({
           className="hidden"
           multiple
           accept={accept.join(',')}
+          aria-label="Choose files"
           data-testid="file-input"
           onChange={(e) => {
             const list = e.target.files ? Array.from(e.target.files) : []

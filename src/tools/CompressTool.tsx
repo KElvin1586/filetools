@@ -175,7 +175,7 @@ export function CompressTool() {
             </div>
           </PremiumGate>
           {!isPremium && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-400">
               Free plan: preset compression levels, single files.
               <PremiumBadge />
             </p>

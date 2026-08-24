@@ -187,7 +187,7 @@ export function ResizeTool() {
             </div>
           </PremiumGate>
           {!isPremium && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-400">
               Free plan: percentage and fit resizing, single files, original format kept.
               <PremiumBadge />
             </p>

@@ -190,7 +190,7 @@ export function PdfTool() {
                 : `Create PDF from ${files.length} image${files.length === 1 ? '' : 's'}`}
           </button>
           {!isPremium && (
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-slate-400">
               Larger batches <PremiumBadge />
             </span>
           )}

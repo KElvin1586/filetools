@@ -7,8 +7,29 @@
     <meta name="theme-color" content="#020617" />
     <meta
       name="description"
-      content="FileTools — a private, client-side file utility suite. Resize, compress, convert, crop, and rotate images, inspect metadata, and work with PDFs. Files never leave your device."
+      content="%VITE_META_DESCRIPTION%"
     />
+    <link rel="canonical" href="%VITE_APP_URL%/" />
+
+    <!-- Open Graph (absolute og:url/og:image require VITE_APP_URL set at build time) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FileTools" />
+    <meta property="og:title" content="FileTools — Private client-side file utilities" />
+    <meta
+      property="og:description"
+      content="%VITE_META_DESCRIPTION%"
+    />
+    <meta property="og:url" content="%VITE_APP_URL%/" />
+    <meta property="og:image" content="%VITE_APP_URL%/og-image.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="FileTools — Private client-side file utilities" />
+    <meta
+      name="twitter:description"
+      content="%VITE_META_DESCRIPTION%"
+    />
+
     <title>FileTools — Private client-side file utilities</title>
   </head>
   <body>

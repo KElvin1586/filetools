@@ -60,7 +60,7 @@ export function HistoryPanel({ open, onClose }: HistoryPanelProps) {
                             {' · '}
                             {entry.summary}
                           </p>
-                          <p className="mt-1 text-xs text-slate-500">
+                          <p className="mt-1 text-xs text-slate-400">
                             {new Date(entry.timestamp).toLocaleString()} · {entry.inputCount} in /{' '}
                             {entry.outputCount} out · {formatBytes(entry.inputBytes)} →{' '}
                             {formatBytes(entry.outputBytes)}

@@ -88,7 +88,7 @@ export function ConvertTool() {
             </div>
           </PremiumGate>
           {!isPremium && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-400">
               Free plan: conversion at a good default quality, single files.
               <PremiumBadge />
             </p>

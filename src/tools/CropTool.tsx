@@ -277,7 +277,7 @@ export function CropTool() {
           <div className="panel p-4">
             <div className="mb-3 flex flex-wrap items-center gap-3">
               <span className="truncate text-sm text-slate-300">{file.name}</span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-400">
                 {natural?.width} × {natural?.height} px
               </span>
               <button type="button" onClick={reset} className="btn-ghost px-2 py-1 text-xs">

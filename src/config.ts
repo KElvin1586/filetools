@@ -17,8 +17,8 @@ function readPositiveNumber(key: string, fallback: number): number {
 }
 
 export const config = {
-  appName: 'FileTools',
-  version: '1.0.0',
+  appName: readString('VITE_APP_NAME', 'FileTools'),
+  version: __APP_VERSION__,
 
   /** One-time Premium price shown in the upgrade modal. */
   premiumPrice: readString('VITE_PREMIUM_PRICE', '9.99'),
@@ -27,8 +27,18 @@ export const config = {
   /**
    * External checkout/payment page for upgrades. FileTools never processes
    * payments itself — this is simply where interested users are sent.
+   * Empty (unset) = upgrade button shows a plain configuration notice;
+   * never a placeholder URL.
    */
-  upgradeUrl: readString('VITE_UPGRADE_URL', 'https://example.com/filetools/upgrade'),
+  upgradeUrl: readString('VITE_UPGRADE_URL', ''),
+
+  /**
+   * DEVELOPMENT-ONLY: internal test checkout page for the dev upgrade flow.
+   * Null in production builds — never exposed to real users.
+   */
+  testUpgradeUrl: import.meta.env.DEV
+    ? readString('VITE_TEST_UPGRADE_URL', '#/test-checkout')
+    : null,
 
   /**
    * License key that unlocks Premium. Distribute through your real payment
@@ -40,11 +50,11 @@ export const config = {
   maxFileSizeBytes: readPositiveNumber('VITE_MAX_FILE_MB', 50) * 1024 * 1024,
 
   /** Hard cap on batch sizes even for Premium users (UI + memory sanity). */
-  maxBatchFiles: 25,
+  maxBatchFiles: readPositiveNumber('VITE_MAX_BATCH_FILES', 50),
 
   /** Free-tier allowance for multi-file PDF utilities. */
-  freePdfMergeLimit: 3,
-  freePdfImagesLimit: 5,
+  freePdfMergeLimit: readPositiveNumber('VITE_FREE_PDF_MERGE_LIMIT', 3),
+  freePdfImagesLimit: readPositiveNumber('VITE_FREE_PDF_IMAGES_LIMIT', 5),
 } as const
 
 /** Formats the configured Premium price for display, e.g. "$9.99". */

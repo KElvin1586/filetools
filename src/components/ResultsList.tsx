@@ -90,7 +90,7 @@ export function ResultsList({ results, onClear, zipName = 'filetools-results.zip
                 <p className="truncate text-sm text-slate-200" title={result.name}>
                   {result.name}
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-400">
                   {formatBytes(result.blob.size)}
                   {result.originalBytes != null && ` · was ${formatBytes(result.originalBytes)}`}
                   {saved != null && saved > 0 && (

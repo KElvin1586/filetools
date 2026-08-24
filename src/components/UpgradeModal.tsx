@@ -23,20 +23,44 @@ function UpgradeDialog() {
   } = useEntitlement()
   const [key, setKey] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Focus the key field once the modal is visible.
-    const timer = setTimeout(() => inputRef.current?.focus(), 50)
-    return () => clearTimeout(timer)
-  }, [])
+    const previouslyFocused = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null
+    const dialog = dialogRef.current
+    if (dialog) {
+      // Focus the dialog itself first; users can Tab to the controls.
+      dialog.focus()
 
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeUpgrade()
+      const onKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          closeUpgrade()
+          return
+        }
+        // Keep Tab cycling inside the dialog.
+        if (event.key !== 'Tab') return
+        const focusable = dialog.querySelectorAll<HTMLElement>(FOCUSABLE)
+        if (focusable.length === 0) return
+        const first = focusable[0]
+        const last = focusable[focusable.length - 1]
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault()
+          last.focus()
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault()
+          first.focus()
+        }
+      }
+      document.addEventListener('keydown', onKeyDown)
+      return () => {
+        document.removeEventListener('keydown', onKeyDown)
+        previouslyFocused?.focus()
+      }
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
   }, [closeUpgrade])
 
   const submit = () => {
@@ -47,14 +71,18 @@ function UpgradeDialog() {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="upgrade-title"
       onClick={(e) => {
         if (e.target === e.currentTarget) closeUpgrade()
       }}
     >
-      <div className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="upgrade-title"
+        tabIndex={-1}
+        className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl outline-none"
+      >
         <div className="flex items-start justify-between">
           <div>
             <h2 id="upgrade-title" className="text-lg font-semibold text-white">
@@ -91,17 +119,46 @@ function UpgradeDialog() {
           </ul>
         </div>
 
-        <a
-          href={config.upgradeUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-premium mt-4 w-full"
-        >
-          Upgrade to Premium →
-        </a>
-        <p className="mt-2 text-center text-xs text-slate-500">
-          Checkout happens on our external payment page — FileTools never sees your card.
-        </p>
+        {config.upgradeUrl ? (
+          <>
+            <a
+              href={config.upgradeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-premium mt-4 w-full"
+            >
+              Upgrade to Premium →
+            </a>
+            <p className="mt-2 text-center text-xs text-slate-400">
+              Checkout happens on the external payment page — FileTools never sees your card.
+            </p>
+          </>
+        ) : (
+          <>
+            <a
+              href="#"
+              onClick={(e) => e.preventDefault()}
+              aria-disabled="true"
+              title="Checkout is not configured for this deployment."
+              className="btn-premium mt-4 w-full cursor-not-allowed opacity-50"
+            >
+              Upgrade to Premium →
+            </a>
+            <p className="mt-2 text-center text-xs text-slate-400">
+              This deployment has no checkout configured — the owner must set
+              VITE_UPGRADE_URL before upgrades can be purchased.
+            </p>
+          </>
+        )}
+        {config.testUpgradeUrl && (
+          <p className="mt-3 rounded-md border border-emerald-600/40 bg-emerald-950/40 px-3 py-2 text-center text-xs text-emerald-300">
+            Development build —{' '}
+            <a href={config.testUpgradeUrl} className="font-medium underline underline-offset-2">
+              open the internal test checkout ↗
+            </a>
+            {' '}(Test Mode — no real payment, never shipped to production)
+          </p>
+        )}
 
         <div className="mt-5 border-t border-slate-800 pt-4">
           <label htmlFor="license-key" className="label">
@@ -110,7 +167,6 @@ function UpgradeDialog() {
           <div className="flex gap-2">
             <input
               id="license-key"
-              ref={inputRef}
               type="text"
               value={key}
               onChange={(e) => setKey(e.target.value)}

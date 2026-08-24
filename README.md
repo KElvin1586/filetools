@@ -64,13 +64,25 @@ npm run preview
 ## Testing
 
 ```bash
-npm test            # 61 unit tests (Vitest, real code paths, no mocks)
-npm run test:e2e    # 16 end-to-end tests (Playwright, real Chromium, desktop + mobile)
+npm test            # 66 unit tests (Vitest, real code paths, no mocks)
+npm run test:e2e    # 38 end-to-end tests (Playwright, real Chromium, desktop + mobile)
 ```
 
 E2E tests generate real binary fixtures (hand-encoded PNGs, pdf-lib PDFs), drive the built
 app in Chromium, download the results and verify the actual bytes (PNG IHDR dimensions, WebP
-RIFF headers, PDF page counts, ZIP contents).
+RIFF headers, PDF page counts, ZIP contents). Separate suites cover freemium gating, every
+Premium feature, 9 viewport widths (320→1920 px), and axe-core accessibility scans.
+
+## Development premium test mode
+
+Development builds (`npm run dev`) include an isolated **Test Mode** so both plans can be
+exercised without money:
+
+- **🧪 TEST toggle** in the header — forces the whole app into Premium or Free.
+- **`#/test-checkout`** — an internal page simulating the "return from payment" step.
+
+Both are compiled out of production builds entirely (`import.meta.env.DEV` dead-code
+elimination). They never claim a real payment occurred and never store credentials.
 
 ## Configuration
 
@@ -78,8 +90,8 @@ RIFF headers, PDF page counts, ZIP contents).
 | --- | --- | --- |
 | `VITE_PREMIUM_PRICE` | `9.99` | One-time Premium price |
 | `VITE_PREMIUM_CURRENCY` | `USD` | Display currency |
-| `VITE_UPGRADE_URL` | `https://example.com/filetools/upgrade` | External checkout page |
-| `VITE_LICENSE_KEY` | `FILETOOLS-PREMIUM` | Demo key that unlocks Premium |
+| `VITE_UPGRADE_URL` | *(unset)* | Your real external checkout page — never a placeholder |
+| `VITE_PREMIUM_LICENSE_KEY` | `FILETOOLS-PREMIUM` | Demo key that unlocks Premium |
 | `VITE_MAX_FILE_MB` | `50` | Per-file size limit |
 | `VITE_MAX_BATCH_FILES` | `50` | Max files per Premium batch |
 | `VITE_FREE_PDF_IMAGES_LIMIT` | `5` | Free images→PDF page limit |
@@ -109,4 +121,5 @@ your device, and never sent anywhere.
 - [User guide](USER-GUIDE.md) — how to use every tool
 - [Installation](INSTALLATION.md) — local setup & development
 - [Deployment](DEPLOYMENT.md) — static hosting & configuration
-- [Changelog](CHANGELOG.md) · [License](LICENSE) (MIT)
+- [Pricing](PRICING.md) · [Changelog](CHANGELOG.md)
+- [License](LICENSE.md) (MIT) · [Commercial license & terms](COMMERCIAL-LICENSE.md)

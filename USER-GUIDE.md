@@ -82,6 +82,10 @@ Free users see 🔒 PREMIUM markers on gated controls. Clicking one opens the up
 3. After checkout you receive a **license key**. Open the upgrade modal, paste the key into
    *Have a license key?* and click **Activate**.
 
+> **Developers:** in `npm run dev` builds you can test both plans without any purchase —
+> use the **🧪 TEST** toggle in the header or visit `#/test-checkout`. Neither exists in
+> production builds.
+
 Premium status is stored in your browser's localStorage on that device. To revert to Free,
 click the ★ PREMIUM badge in the header and confirm.
 

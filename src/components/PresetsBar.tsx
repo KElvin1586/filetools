@@ -89,7 +89,7 @@ export function PresetsBar({ tool, getSettings, onApply }: PresetsBarProps) {
                 type="button"
                 onClick={() => remove(p.id)}
                 title={`Delete preset "${p.name}"`}
-                className="text-xs text-slate-500 hover:text-red-400"
+                className="text-xs text-slate-400 hover:text-red-400"
               >
                 ✕ {p.name}
               </button>

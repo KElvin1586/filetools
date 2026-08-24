@@ -139,10 +139,13 @@ test('FREEMIUM: free users cannot batch; premium unlocks batch + ZIP', async ({ 
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
   await expect(dialog).toContainText('$9.99')
-  await expect(dialog.getByRole('link', { name: /Upgrade to Premium/i })).toHaveAttribute(
-    'href',
-    'https://example.com/filetools/upgrade',
-  )
+  // No checkout URL is configured in the default build — the upgrade CTA must be
+  // visibly disabled and must NEVER point to a placeholder domain.
+  const upgradeCta = dialog.getByRole('link', { name: /Upgrade to Premium/i })
+  await expect(upgradeCta).toHaveAttribute('aria-disabled', 'true')
+  const href = await upgradeCta.getAttribute('href')
+  expect(href ?? '').not.toMatch(/example\.(com|org|net)/)
+  await expect(dialog).toContainText(/no checkout configured/i)
 
   // 2. Wrong key rejected.
   await dialog.getByLabel('Have a license key?').fill('NOT-A-KEY')

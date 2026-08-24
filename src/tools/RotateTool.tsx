@@ -43,7 +43,7 @@ function RotationPreview({ files, degrees, flipH, flipV }: { files: File[]; degr
   const normalized = normalizeRotation(degrees)
   return (
     <div className="flex flex-col items-center gap-2 rounded-lg border border-slate-800 bg-slate-950/50 p-4">
-      <span className="text-xs uppercase tracking-wide text-slate-500">Preview — {files[0].name}</span>
+      <span className="text-xs uppercase tracking-wide text-slate-400">Preview — {files[0].name}</span>
       <div className="flex h-48 w-full items-center justify-center overflow-hidden">
         <img
           src={url}

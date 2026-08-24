@@ -31,6 +31,10 @@ export const PREMIUM_FEATURES: readonly PremiumFeature[] = Object.keys(
 ) as PremiumFeature[]
 
 export const PLAN_STORAGE_KEY = 'filetools.plan'
+export const DEV_PLAN_STORAGE_KEY = 'filetools.plan.dev'
+
+/** Whether the dev-only premium test mode is available (never in production). */
+export const DEV_TEST_MODE: boolean = import.meta.env.DEV
 
 /** Central entitlement check — every premium code path goes through here. */
 export function canUseFeature(plan: Plan, feature: PremiumFeature): boolean {
@@ -50,4 +54,9 @@ export function isValidLicenseKey(input: string, expected: string = config.licen
 
 export function parseStoredPlan(raw: string | null): Plan {
   return raw === 'premium' ? 'premium' : 'free'
+}
+
+/** Dev override accepts 'free' too; anything else = no override. */
+export function parseStoredPlanDev(raw: string | null): Plan | null {
+  return raw === 'premium' || raw === 'free' ? raw : null
 }
