@@ -1,0 +1,5 @@
+# FileTools — public freemium product, fully crawlable.
+# All tools run in the same page (hash routes), so crawlers only
+# ever see the landing page.
+User-agent: *
+Allow: /

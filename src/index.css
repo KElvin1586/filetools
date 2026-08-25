@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-slate-950 text-slate-100 antialiased;
+  }
+  body {
+    @apply min-h-screen;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-sky-400 ring-offset-2 ring-offset-slate-950 rounded;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-sky-500 text-slate-950 hover:bg-sky-400;
+  }
+  .btn-secondary {
+    @apply btn border border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700;
+  }
+  .btn-ghost {
+    @apply btn text-slate-300 hover:bg-slate-800 hover:text-white;
+  }
+  .btn-premium {
+    @apply btn bg-amber-400 text-slate-950 hover:bg-amber-300;
+  }
+  .panel {
+    @apply rounded-xl border border-slate-800 bg-slate-900/60;
+  }
+  .input {
+    @apply w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500;
+  }
+  .label {
+    @apply mb-1 block text-xs font-medium uppercase tracking-wide text-slate-400;
+  }
+}
