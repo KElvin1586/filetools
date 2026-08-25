@@ -26,7 +26,9 @@ function htmlEnvPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), htmlEnvPlugin()],
-  base: './',
+  // Deployed to GitHub Pages at https://kelvin1586.github.io/filetools/ — the
+  // base must match the repository name. Overridable via BASE_PATH for forks.
+  base: process.env.BASE_PATH ?? '/filetools/',
   define: {
     __APP_VERSION__: JSON.stringify(version),
   },

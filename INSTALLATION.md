@@ -48,8 +48,9 @@ npm run build      # outputs dist/
 npm run preview    # serves dist/ locally on http://localhost:4173
 ```
 
-`dist/` is a plain static folder — deploy it anywhere (see DEPLOYMENT.md). The build uses a
-relative base (`base: './'`), so it works from any sub-path without extra config.
+`dist/` is a plain static folder — deploy it anywhere (see DEPLOYMENT.md). The build targets
+the GitHub Pages path `/filetools/` by default; set `BASE_PATH` at build time for other paths
+(e.g. `BASE_PATH=./ npm run build` for fully relative assets).
 
 ## Development
 

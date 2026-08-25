@@ -44,7 +44,7 @@ npm install
 npm run build
 ```
 
-Output: `dist/`. The app uses relative asset paths, so it can be served from any sub-path.
+Output: `dist/`. The default base is `/filetools/` (GitHub Pages). For another sub-path or root hosting, rebuild with `BASE_PATH=/your/path/` (or `BASE_PATH=./` for fully relative assets).
 
 ## 3. Host it
 
@@ -55,15 +55,31 @@ Output: `dist/`. The app uses relative asset paths, so it can be served from any
 - No functions, no redirects needed (hash-based tool routes need no SPA rewrite rules,
   but see below if you add path routing later).
 
-### GitHub Pages
+### GitHub Pages (automated — the canonical deployment)
+
+The repository ships with `.github/workflows/deploy.yml`, which builds `dist/` and deploys
+it to GitHub Pages on every push to `main` (or manually via the Actions tab).
+
+One-time setup in the GitHub repo:
+
+1. **Settings → Pages → Source: "GitHub Actions".**
+2. Optionally set **Settings → Secrets and variables → Actions → Variables**:
+   `VITE_UPGRADE_URL` (your real checkout link), `VITE_PREMIUM_PRICE`,
+   `VITE_PREMIUM_CURRENCY`, `VITE_PREMIUM_LICENSE_KEY`. These are public build-time
+   values — never put private provider secrets in them.
+3. Push to `main` or run the workflow manually; the site is published at
+   <https://kelvin1586.github.io/filetools/>.
+
+The Vite `base` is `/filetools/` to match the repo name (see `vite.config.ts`; override via
+the `BASE_PATH` env var if you fork under a different name). Tool routes are hash-based
+(`#/resize`, …), so no SPA rewrite rules are needed.
+
+Manual fallback (not the default):
 
 ```bash
 npm run build
-# push dist/ to the gh-pages branch, e.g. with:
 npx gh-pages -d dist
 ```
-
-Works out of the box, including under `https://<user>.github.io/<repo>/`.
 
 ### Any static server (nginx, Caddy, Apache, S3 + CDN, …)
 

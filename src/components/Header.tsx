@@ -19,7 +19,7 @@ export function Header({ onHome, onOpenHistory }: HeaderProps) {
           className="flex items-center gap-1.5 text-base font-bold text-white sm:gap-2 sm:text-lg"
           aria-label="FileTools home"
         >
-          <img src="./favicon.svg" alt="" className="h-6 w-6 sm:h-7 sm:w-7" />
+          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="h-6 w-6 sm:h-7 sm:w-7" />
           FileTools
         </button>
         <span
