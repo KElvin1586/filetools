@@ -19,7 +19,9 @@ are needed in this repo at all**. One-time setup lives in the Lemon Squeezy dash
 
 To change the checkout (different product/variant), set `VITE_UPGRADE_URL` in `.env` (or
 as a repo Actions variable for the Pages workflow) and rebuild. Optional overrides:
-`VITE_PREMIUM_PRICE` (default `9.99`), `VITE_PREMIUM_CURRENCY` (default `USD`).
+`VITE_PREMIUM_PRICE`/`VITE_PREMIUM_CURRENCY` (default `1299` KES — keep in sync with the
+price set in Lemon Squeezy) and `VITE_PREMIUM_PRICE_ALT`/`VITE_PREMIUM_CURRENCY_ALT`
+(the ≈ $10 USD reference shown next to the price).
 
 **Never put Lemon Squeezy API keys, webhook secrets, or payment credentials into `VITE_*`
 variables** — they ship publicly in the frontend bundle. The license API authenticates

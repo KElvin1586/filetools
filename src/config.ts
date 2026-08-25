@@ -21,8 +21,12 @@ export const config = {
   version: __APP_VERSION__,
 
   /** One-time Premium price shown in the upgrade modal. */
-  premiumPrice: readString('VITE_PREMIUM_PRICE', '9.99'),
-  premiumCurrency: readString('VITE_PREMIUM_CURRENCY', 'USD'),
+  premiumPrice: readString('VITE_PREMIUM_PRICE', '1299'),
+  /** Currency the checkout actually charges (Lemon Squeezy store currency). */
+  premiumCurrency: readString('VITE_PREMIUM_CURRENCY', 'KES'),
+  /** Approximate USD reference shown next to the price ("≈ $10 USD"). */
+  premiumAltPrice: readString('VITE_PREMIUM_PRICE_ALT', '10'),
+  premiumAltCurrency: readString('VITE_PREMIUM_CURRENCY_ALT', 'USD'),
 
   /**
    * External checkout/payment page for upgrades. FileTools never processes
@@ -60,18 +64,30 @@ export const config = {
   freePdfImagesLimit: readPositiveNumber('VITE_FREE_PDF_IMAGES_LIMIT', 5),
 } as const
 
-/** Formats the configured Premium price for display, e.g. "$9.99". */
-export function formatPremiumPrice(): string {
-  const amount = Number(config.premiumPrice)
-  if (Number.isFinite(amount)) {
+/** Formats a price for display, e.g. "KSh 1,299" or "$9.99". */
+export function formatPrice(amount: string, currency: string): string {
+  const value = Number(amount)
+  if (Number.isFinite(value)) {
     try {
       return new Intl.NumberFormat(undefined, {
         style: 'currency',
-        currency: config.premiumCurrency,
-      }).format(amount)
+        currency,
+        // Whole amounts read better without trailing zeros ("KSh 1,299").
+        ...(Number.isInteger(value) ? { maximumFractionDigits: 0 } : {}),
+      }).format(value)
     } catch {
       // Unknown currency code — fall through to plain formatting.
     }
   }
-  return `${config.premiumPrice} ${config.premiumCurrency}`
+  return `${amount} ${currency}`
+}
+
+/** Formats the configured Premium price for display, e.g. "KSh 1,299". */
+export function formatPremiumPrice(): string {
+  return formatPrice(config.premiumPrice, config.premiumCurrency)
+}
+
+/** Formats the approximate reference price, e.g. "≈ $10 USD". */
+export function formatPremiumAltPrice(): string {
+  return `≈ ${formatPrice(config.premiumAltPrice, config.premiumAltCurrency)} ${config.premiumAltCurrency}`
 }

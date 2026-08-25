@@ -60,8 +60,9 @@ describe('upgrade URL configuration', () => {
   it('dev test checkout URL is present in dev builds only', () => {
     expect(config.testUpgradeUrl).toBe('#/test-checkout')
   })
-  it('premium pricing is configurable with sane defaults', () => {
-    expect(config.premiumPrice).toBe('9.99')
-    expect(config.premiumCurrency).toBe('USD')
+  it('premium pricing matches the store (KES charge with USD reference)', () => {
+    expect(config.premiumPrice).toBe('1299')
+    expect(config.premiumCurrency).toBe('KES')
+    expect(config.premiumAltCurrency).toBe('USD')
   })
 })

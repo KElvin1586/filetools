@@ -11,9 +11,10 @@ test('home page shows all tools, pricing and the privacy claim', async ({ page }
   for (const name of ['Resize', 'Compress', 'Convert', 'Crop', 'Rotate & flip', 'Metadata', 'PDF tools']) {
     await expect(page.getByRole('button', { name: new RegExp(name) })).toBeVisible()
   }
-  // Pricing: Free = $0, Premium = $9.99 one-time (default config)
+  // Pricing: Free = $0, Premium = KSh 1,299 one-time with a USD reference
   await expect(page.getByText('$0', { exact: true })).toBeVisible()
-  await expect(page.getByText('$9.99')).toBeVisible()
+  await expect(page.getByText(/1,299/).first()).toBeVisible()
+  await expect(page.getByText(/≈ \$10 USD/).first()).toBeVisible()
   await expect(page.getByText(/never uploaded/i).first()).toBeVisible()
 })
 
@@ -138,7 +139,7 @@ test('FREEMIUM: free users cannot batch; premium unlocks batch + ZIP', async ({ 
   await expect(page.getByRole('alert')).toContainText(/Batch processing is a Premium feature/i)
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
-  await expect(dialog).toContainText('$9.99')
+  await expect(dialog).toContainText('1,299')
   // The upgrade CTA points at the REAL Lemon Squeezy checkout — never a placeholder.
   const upgradeCta = dialog.getByRole('link', { name: /Upgrade to Premium/i })
   await expect(upgradeCta).toHaveAttribute('href', LS_CHECKOUT_URL)

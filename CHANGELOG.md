@@ -3,6 +3,15 @@
 All notable changes to FileTools are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] — 2026-08-25
+
+### Fixed — displayed price now matches the actual charge
+
+- The Lemon Squeezy checkout charges **KSh 1,299**, but the app displayed $9.99 USD.
+  The price display now defaults to the real charge (KSh 1,299) with an approximate
+  USD reference ("≈ $10 USD") shown next to it. Configurable via `VITE_PREMIUM_PRICE`,
+  `VITE_PREMIUM_CURRENCY`, `VITE_PREMIUM_PRICE_ALT`, `VITE_PREMIUM_CURRENCY_ALT`.
+
 ## [1.2.0] — 2026-08-25
 
 Real payments: Lemon Squeezy checkout + license activation.

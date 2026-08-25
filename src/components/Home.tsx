@@ -1,4 +1,4 @@
-import { config, formatPremiumPrice } from '../config'
+import { config, formatPremiumAltPrice, formatPremiumPrice } from '../config'
 import { PREMIUM_FEATURES, FEATURE_LABELS } from '../lib/entitlement'
 import type { ToolId } from '../lib/presets'
 import { useEntitlement } from '../state/entitlement'
@@ -134,7 +134,9 @@ export function Home({ onOpenTool }: HomeProps) {
             <h3 className="font-semibold text-amber-300">Premium</h3>
             <p className="mt-1 text-3xl font-bold text-white">
               {formatPremiumPrice()}
-              <span className="ml-2 text-sm font-normal text-slate-400">one-time</span>
+              <span className="ml-2 text-sm font-normal text-slate-400">
+                one-time · {formatPremiumAltPrice()}
+              </span>
             </p>
             <ul className="mt-4 space-y-2 text-sm text-slate-300">
               <li className="flex gap-2">

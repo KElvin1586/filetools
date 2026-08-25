@@ -61,7 +61,7 @@ page count and document metadata (title, author, producer, dates). Nothing is up
 
 ## Free vs Premium
 
-The Free plan covers single-file work end-to-end. Premium is a **one-time $9.99** purchase
+The Free plan covers single-file work end-to-end. Premium is a **one-time KSh 1,299 (≈ $10 USD)** purchase
 (configurable) that unlocks:
 
 - Batch processing (up to 50 files per job)

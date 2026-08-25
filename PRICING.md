@@ -5,7 +5,7 @@ subscriptions, no accounts, no trials that silently convert.
 
 | | **Free** | **Premium** |
 | --- | --- | --- |
-| Price | $0 | **$9.99 one-time** (configurable) |
+| Price | $0 | **KSh 1,299 one-time** (≈ $10 USD; configurable) |
 | Single-file processing | ✓ | ✓ |
 | Resize (percentage & fit) | ✓ | ✓ |
 | Basic compression presets | ✓ | ✓ |
@@ -48,8 +48,10 @@ bundle itself could bypass checks, which is true of every client-side-licensed a
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `VITE_PREMIUM_PRICE` | `9.99` | Amount shown in the modal & pricing section |
-| `VITE_PREMIUM_CURRENCY` | `USD` | ISO 4217 display currency |
+| `VITE_PREMIUM_PRICE` | `1299` | Amount charged — must match the Lemon Squeezy price |
+| `VITE_PREMIUM_CURRENCY` | `KES` | Currency the checkout actually charges |
+| `VITE_PREMIUM_PRICE_ALT` | `10` | Approximate reference amount |
+| `VITE_PREMIUM_CURRENCY_ALT` | `USD` | Reference currency shown as "≈ $10 USD" |
 | `VITE_UPGRADE_URL` | the live Lemon Squeezy checkout | Where the Upgrade button sends buyers |
 
 All are build-time values (`.env`, see `.env.example`). Changing the price or checkout

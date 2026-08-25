@@ -35,7 +35,7 @@ test('mobile upgrade modal fits the viewport', async ({ page }) => {
   await page.getByRole('button', { name: 'Upgrade', exact: true }).first().click()
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
-  await expect(dialog.getByText('$9.99')).toBeVisible()
+  await expect(dialog.getByText(/1,299/)).toBeVisible()
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   )

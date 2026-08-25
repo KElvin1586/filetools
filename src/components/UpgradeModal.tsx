@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { config, formatPremiumPrice } from '../config'
+import { config, formatPremiumAltPrice, formatPremiumPrice } from '../config'
 import { FEATURE_LABELS, PREMIUM_FEATURES } from '../lib/entitlement'
 import { useEntitlement } from '../state/entitlement'
 
@@ -114,7 +114,9 @@ const dialogRef = useRef<HTMLDivElement>(null)
         <div className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
           <p className="text-2xl font-bold text-amber-300">
             {formatPremiumPrice()}
-            <span className="ml-2 text-sm font-normal text-slate-300">one-time payment</span>
+            <span className="ml-2 text-sm font-normal text-slate-300">
+              one-time payment · {formatPremiumAltPrice()}
+            </span>
           </p>
           <ul className="mt-3 space-y-1 text-sm text-slate-200">
             {PREMIUM_FEATURES.map((feature) => (

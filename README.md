@@ -32,7 +32,7 @@ every premium capability. Free users are blocked from executing premium function
 - Crop, rotate & flip, metadata, basic PDF tools
 - Per-file downloads
 
-**Premium — $9.99 one-time (configurable)**
+**Premium — KSh 1,299 one-time, ≈ $10 USD (configurable)**
 
 - Batch processing (up to 50 files)
 - Advanced compression controls (target size, exact quality)
@@ -89,8 +89,8 @@ elimination). They never claim a real payment occurred and never store credentia
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `VITE_PREMIUM_PRICE` | `9.99` | One-time Premium price |
-| `VITE_PREMIUM_CURRENCY` | `USD` | Display currency |
+| `VITE_PREMIUM_PRICE` | `1299` | One-time Premium price (matches the checkout charge) |
+| `VITE_PREMIUM_CURRENCY` | `KES` | Charge currency; `VITE_PREMIUM_PRICE_ALT`/`VITE_PREMIUM_CURRENCY_ALT` add an ≈ USD reference |
 | `VITE_UPGRADE_URL` | the live Lemon Squeezy checkout | Where buyers pay |
 | `VITE_MAX_FILE_MB` | `50` | Per-file size limit |
 | `VITE_MAX_BATCH_FILES` | `50` | Max files per Premium batch |

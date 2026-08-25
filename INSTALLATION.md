@@ -28,8 +28,8 @@ cp .env.example .env
 
 | Variable | Default | Notes |
 | --- | --- | --- |
-| `VITE_PREMIUM_PRICE` | `9.99` | One-time Premium price shown in UI |
-| `VITE_PREMIUM_CURRENCY` | `USD` | Any ISO-4217 code (EUR, GBP, …) |
+| `VITE_PREMIUM_PRICE` | `1299` | One-time Premium price — keep in sync with the Lemon Squeezy charge |
+| `VITE_PREMIUM_CURRENCY` | `KES` | Charge currency; `VITE_PREMIUM_PRICE_ALT`/`VITE_PREMIUM_CURRENCY_ALT` add an ≈ USD reference |
 | `VITE_UPGRADE_URL` | the live Lemon Squeezy checkout | Override only if the product/variant changes |
 | `VITE_MAX_FILE_MB` | `50` | Per-file size limit |
 | `VITE_MAX_BATCH_FILES` | `50` | Premium batch cap |
