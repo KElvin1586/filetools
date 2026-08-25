@@ -23,6 +23,7 @@ function UpgradeDialog() {
   } = useEntitlement()
   const [key, setKey] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
   const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 const dialogRef = useRef<HTMLDivElement>(null)
@@ -63,9 +64,15 @@ const dialogRef = useRef<HTMLDivElement>(null)
     }
   }, [closeUpgrade])
 
-  const submit = () => {
-    const result = activateLicense(key)
-    if (!result.ok) setError(result.error ?? 'Invalid license key.')
+  const submit = async () => {
+    setSubmitting(true)
+    setError(null)
+    try {
+      const result = await activateLicense(key)
+      if (!result.ok) setError(result.error ?? 'Invalid license key.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -162,7 +169,7 @@ const dialogRef = useRef<HTMLDivElement>(null)
 
         <div className="mt-5 border-t border-slate-800 pt-4">
           <label htmlFor="license-key" className="label">
-            Have a license key?
+            Have a license key from your purchase email?
           </label>
           <div className="flex gap-2">
             <input
@@ -170,16 +177,26 @@ const dialogRef = useRef<HTMLDivElement>(null)
               type="text"
               value={key}
               onChange={(e) => setKey(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && submit()}
-              placeholder="Enter license key"
+              onKeyDown={(e) => e.key === 'Enter' && !submitting && void submit()}
+              placeholder="e.g. 1A2B3C4D-…"
               className="input"
               autoComplete="off"
               spellCheck={false}
+              disabled={submitting}
             />
-            <button type="button" onClick={submit} className="btn-secondary shrink-0">
-              Activate
+            <button
+              type="button"
+              onClick={() => void submit()}
+              className="btn-secondary shrink-0"
+              disabled={submitting}
+            >
+              {submitting ? 'Verifying…' : 'Activate'}
             </button>
           </div>
+          <p className="mt-2 text-xs text-slate-400">
+            Keys are verified with Lemon Squeezy's license server — Premium never unlocks
+            without a valid, activated license.
+          </p>
           {error && (
             <p className="mt-2 text-sm text-red-400" role="alert">
               {error}

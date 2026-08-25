@@ -32,11 +32,12 @@ application. There are no subscriptions, no recurring charges, and no accounts.
 
 ## Nature of the entitlement
 
-FileTools is a fully client-side application. The license mechanism is a **convenience gate**,
-not a cryptographic protection: the key is visible in the shipped JavaScript bundle, and a
-technically skilled user could bypass it. Buyers pay for a polished, working product and to
-support the developer — not for a tamper-proof DRM system. The seller acknowledges this openly
-rather than pretending otherwise.
+FileTools is a fully client-side application. Premium unlocks only after a Lemon Squeezy
+license key is activated against the real license API, and it is revalidated on every load —
+revoked, refunded, or forged records stop unlocking Premium. Editing localStorage, URL
+parameters, or console variables cannot bypass activation. As with any client-side-licensed
+software, a determined user patching the code itself could bypass checks; buyers pay for a
+polished, working product and to support the developer.
 
 ## Source code
 

@@ -30,16 +30,17 @@ cp .env.example .env
 | --- | --- | --- |
 | `VITE_PREMIUM_PRICE` | `9.99` | One-time Premium price shown in UI |
 | `VITE_PREMIUM_CURRENCY` | `USD` | Any ISO-4217 code (EUR, GBP, …) |
-| `VITE_UPGRADE_URL` | *(unset)* | Your real checkout page; unset = Upgrade button shows a plain "not configured" notice, never a placeholder link |
-| `VITE_PREMIUM_LICENSE_KEY` | `FILETOOLS-PREMIUM` | Key that unlocks Premium. **Change it** — it ships with the client bundle. |
+| `VITE_UPGRADE_URL` | the live Lemon Squeezy checkout | Override only if the product/variant changes |
 | `VITE_MAX_FILE_MB` | `50` | Per-file size limit |
 | `VITE_MAX_BATCH_FILES` | `50` | Premium batch cap |
 | `VITE_FREE_PDF_IMAGES_LIMIT` | `5` | Free images→PDF pages |
 | `VITE_FREE_PDF_MERGE_LIMIT` | `3` | Free PDF merge inputs |
 
-> Note: entitlement is client-side by design. The license key and all limits are visible in
-> the shipped bundle; this app sells convenience, not secrecy. For tamper-proof licensing you
-> would need a server — which this project deliberately avoids.
+> Premium activation is handled by Lemon Squeezy's public license API at runtime
+> (`src/lib/license.ts`): the app activates the buyer's key, stores the resulting instance,
+> and revalidates it on every load. There is **no static license key** in the bundle.
+> Never put Lemon Squeezy API keys, webhook secrets, or any payment credential in
+> `VITE_*` variables — everything named `VITE_*` ships publicly in the bundle.
 
 ## Production build
 

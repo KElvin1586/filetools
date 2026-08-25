@@ -77,17 +77,20 @@ Free users see 🔒 PREMIUM markers on gated controls. Clicking one opens the up
 ## Upgrading
 
 1. Click **Upgrade** in the header (or any 🔒 control).
-2. The modal shows the price and feature list. Click **Upgrade to Premium →** to visit the
-   external checkout page (configured by the site owner; FileTools never handles your card).
-3. After checkout you receive a **license key**. Open the upgrade modal, paste the key into
-   *Have a license key?* and click **Activate**.
+2. The modal shows the price and feature list. Click **Upgrade to Premium →** to open the
+   Lemon Squeezy checkout (FileTools never handles your card).
+3. After checkout, Lemon Squeezy emails you a **license key**. Open the upgrade modal,
+   paste the key into *Have a license key from your purchase email?* and click
+   **Activate**. The app verifies the key with Lemon Squeezy's license server before
+   Premium unlocks.
 
 > **Developers:** in `npm run dev` builds you can test both plans without any purchase —
 > use the **🧪 TEST** toggle in the header or visit `#/test-checkout`. Neither exists in
 > production builds.
 
-Premium status is stored in your browser's localStorage on that device. To revert to Free,
-click the ★ PREMIUM badge in the header and confirm.
+Premium revalidates with the license server on each visit — it stays active after
+reload, and stops working if the key is revoked or refunded. To deactivate this device,
+click the ★ PREMIUM badge in the header.
 
 ## Presets (Premium)
 

@@ -32,9 +32,66 @@ export async function readDownload(download: Download): Promise<{ buffer: Buffer
   return { buffer: fs.readFileSync(filePath), filename: download.suggestedFilename() }
 }
 
-export async function unlockPremium(page: Page, key = 'FILETOOLS-PREMIUM'): Promise<void> {
+export const TEST_LICENSE_KEY = 'FT-E2E-TEST-KEY-1234-5678'
+export const LS_CHECKOUT_URL =
+  'https://kelvindigitaltools.lemonsqueezy.com/checkout/buy/5a9a0680-dbb4-4c1b-b38c-02c8bbd20fe1'
+
+/**
+ * Stubs Lemon Squeezy's license API at the browser-network boundary so E2E
+ * tests exercise the app's REAL activation/validation code paths (and the real
+ * response shapes observed against api.lemonsqueezy.com) without charging money
+ * or depending on external network. The app code itself is never faked.
+ */
+export async function stubLicenseApi(page: Page): Promise<void> {
+  await page.route('**/api.lemonsqueezy.com/v1/licenses/**', async (route) => {
+    const request = route.request()
+    const url = request.url()
+    let key: string
+    try {
+      const body = request.postDataJSON() as { license_key?: string } | null
+      key = body?.license_key ?? ''
+    } catch {
+      key = ''
+    }
+    const isValidKey = key === TEST_LICENSE_KEY
+    const fulfill = (status: number, payload: unknown) =>
+      route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(payload) })
+
+    if (url.endsWith('/activate')) {
+      if (isValidKey) {
+        return fulfill(200, {
+          activated: true,
+          error: null,
+          license_key: { status: 'active', key, activation_limit: 5, activation_usage: 1, expires_at: null },
+          instance: { id: 'e2e-instance-1', name: 'browser' },
+          meta: { product_name: 'FileTools Premium' },
+        })
+      }
+      return fulfill(404, { activated: false, error: 'license_key not found.' })
+    }
+    if (url.endsWith('/validate')) {
+      if (isValidKey) {
+        return fulfill(200, {
+          valid: true,
+          error: null,
+          license_key: { status: 'active', key, activation_limit: 5, activation_usage: 1, expires_at: null },
+          instance: { id: 'e2e-instance-1', name: 'browser' },
+          meta: {},
+        })
+      }
+      return fulfill(404, { valid: false, error: 'license_key not found.' })
+    }
+    if (url.endsWith('/deactivate')) {
+      return fulfill(200, { deactivated: true, error: null })
+    }
+    return route.continue()
+  })
+}
+
+export async function unlockPremium(page: Page, key = TEST_LICENSE_KEY): Promise<void> {
+  await stubLicenseApi(page)
   await page.getByRole('button', { name: 'Upgrade', exact: true }).first().click()
-  await page.getByLabel('Have a license key?').fill(key)
+  await page.getByLabel(/license key/i).fill(key)
   await page.getByRole('button', { name: 'Activate' }).click()
   await expect(page.getByRole('button', { name: '★ PREMIUM' })).toBeVisible()
 }

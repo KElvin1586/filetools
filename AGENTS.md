@@ -26,7 +26,9 @@
 - `vite preview` needs `preview.allowedHosts` for non-localhost hosts (configured for
   `*.prod-runtime.all-hands.dev`).
 - Animated GIFs decode to the first frame only — expected browser behavior, not a bug.
-- Entitlement is client-side by design; the license key ships in the bundle (documented).
+- Premium = Lemon Squeezy license API (src/lib/license.ts): activate on purchase-key entry,
+  revalidate on every load, deactivate on opt-out. No static keys anywhere. E2E stubs the
+  network boundary (page.route) with real LS response shapes; unit tests cover parsers.
 - index.html `%VITE_*%` placeholders break the build ("URI malformed") when the var is
   undefined — substitutions happen in the `htmlEnvPlugin` in vite.config.ts with defaults;
   add new placeholders there, not directly to index.html.

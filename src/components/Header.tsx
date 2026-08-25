@@ -49,8 +49,8 @@ export function Header({ onHome, onOpenHistory }: HeaderProps) {
           {isPremium ? (
             <button
               type="button"
-              onClick={deactivate}
-              title="Premium is active on this device. Click to revert to Free."
+              onClick={() => void deactivate()}
+              title="Premium is active on this device. Click to deactivate this device and revert to Free."
               className="rounded-full bg-amber-400 px-2.5 py-1 text-xs font-bold text-slate-950 sm:px-3"
             >
               ★ PREMIUM

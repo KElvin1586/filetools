@@ -30,7 +30,10 @@ export const config = {
    * Empty (unset) = upgrade button shows a plain configuration notice;
    * never a placeholder URL.
    */
-  upgradeUrl: readString('VITE_UPGRADE_URL', ''),
+  upgradeUrl: readString(
+    'VITE_UPGRADE_URL',
+    'https://kelvindigitaltools.lemonsqueezy.com/checkout/buy/5a9a0680-dbb4-4c1b-b38c-02c8bbd20fe1',
+  ),
 
   /**
    * DEVELOPMENT-ONLY: internal test checkout page for the dev upgrade flow.
@@ -41,10 +44,10 @@ export const config = {
     : null,
 
   /**
-   * License key that unlocks Premium. Distribute through your real payment
-   * flow. Client-side keys are obfuscation, not security.
+   * Premium is unlocked by activating a Lemon Squeezy license key via the
+   * license API (src/lib/license.ts). There is deliberately no shared/static
+   * key in this bundle — anything client-side would be forgeable anyway.
    */
-  licenseKey: readString('VITE_PREMIUM_LICENSE_KEY', 'FILETOOLS-PREMIUM'),
 
   /** Per-file size limit for every tool. */
   maxFileSizeBytes: readPositiveNumber('VITE_MAX_FILE_MB', 50) * 1024 * 1024,

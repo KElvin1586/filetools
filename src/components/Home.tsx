@@ -159,12 +159,12 @@ export function Home({ onOpenTool }: HomeProps) {
             )}
           </div>
         </div>
-        <p className="mt-4 text-center text-xs text-slate-400">
+        <p className="mt-4 max-w-full text-center text-xs text-slate-400">
           {config.upgradeUrl ? (
             <>
-              Payments are handled on the external checkout page:{' '}
-              <a href={config.upgradeUrl} target="_blank" rel="noopener noreferrer" className="text-sky-400 underline underline-offset-2 hover:text-sky-300">
-                {config.upgradeUrl.replace(/^https?:\/\//, '')}
+              Payments are handled securely by Lemon Squeezy:{' '}
+              <a href={config.upgradeUrl} target="_blank" rel="noopener noreferrer" className="text-sky-400 underline underline-offset-2 break-all hover:text-sky-300">
+                Buy FileTools Premium
               </a>
             </>
           ) : (

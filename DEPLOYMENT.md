@@ -4,36 +4,26 @@ FileTools builds to a static folder (`dist/`): HTML, CSS, JS and one SVG icon. N
 runtime, database, or environment secrets are required. Anything that serves static files will
 work.
 
-## 1. Configure — connecting a real checkout
+## 1. Configure — the checkout is already connected
 
-Everything commercial is configured at build time. In a fresh `.env` (copied from
-`.env.example`) the checkout URL is deliberately **unset**, which keeps the Upgrade button
-disabled with a plain "not configured" notice — no placeholder is ever shown to users.
+The build ships with the real **Lemon Squeezy** checkout configured:
 
-To go live with a real payment provider:
+```
+VITE_UPGRADE_URL=https://kelvindigitaltools.lemonsqueezy.com/checkout/buy/5a9a0680-dbb4-4c1b-b38c-02c8bbd20fe1
+```
 
-1. **Create the product** in your chosen provider (Lemon Squeezy, Stripe, Paddle, Gumroad…).
-   One-time product, priced to match `VITE_PREMIUM_PRICE`/`VITE_PREMIUM_CURRENCY`.
-2. **Create the checkout/payment link** for that product in the provider's dashboard and
-   copy its URL.
-3. **Set `VITE_UPGRADE_URL` to that exact URL** in your `.env`:
+Buyers pay there, receive a license key by email, and activate it in the app's upgrade
+modal — activation calls Lemon Squeezy's public license API at runtime, so **no secrets
+are needed in this repo at all**. One-time setup lives in the Lemon Squeezy dashboard
+(license-key generation on the variant, activation limit); see PRICING.md.
 
-   ```bash
-   VITE_UPGRADE_URL=https://YOUR_REAL_CHECKOUT_URL
-   VITE_PREMIUM_LICENSE_KEY=YOUR-REAL-LICENSE-KEY
-   VITE_PREMIUM_PRICE=9.99
-   VITE_PREMIUM_CURRENCY=USD
-   ```
+To change the checkout (different product/variant), set `VITE_UPGRADE_URL` in `.env` (or
+as a repo Actions variable for the Pages workflow) and rebuild. Optional overrides:
+`VITE_PREMIUM_PRICE` (default `9.99`), `VITE_PREMIUM_CURRENCY` (default `USD`).
 
-4. **Rebuild the application** (`npm run build`) — `VITE_*` values are baked into the
-   bundle; editing `.env` alone changes nothing until you rebuild.
-5. **Test the checkout** end-to-end: deploy, open the upgrade modal, click *Upgrade to
-   Premium →*, run a test purchase in your provider's sandbox/test mode, and confirm the
-   license key you distribute activates Premium in the modal.
-6. **Never put private API keys, signing secrets, or payment credentials into `VITE_*`
-   variables** — they ship publicly in the frontend bundle. Only public URLs and the
-   (public-by-design) license key belong there. Keep private provider credentials in the
-   provider dashboard or on your own server, never in this codebase.
+**Never put Lemon Squeezy API keys, webhook secrets, or payment credentials into `VITE_*`
+variables** — they ship publicly in the frontend bundle. The license API authenticates
+with the customer's key; it needs no secret.
 
 Env vars are baked into the bundle at build time — rebuild after changing them.
 
@@ -64,9 +54,9 @@ One-time setup in the GitHub repo:
 
 1. **Settings → Pages → Source: "GitHub Actions".**
 2. Optionally set **Settings → Secrets and variables → Actions → Variables**:
-   `VITE_UPGRADE_URL` (your real checkout link), `VITE_PREMIUM_PRICE`,
-   `VITE_PREMIUM_CURRENCY`, `VITE_PREMIUM_LICENSE_KEY`. These are public build-time
-   values — never put private provider secrets in them.
+   `VITE_UPGRADE_URL` (only to switch product/variant), `VITE_PREMIUM_PRICE`,
+   `VITE_PREMIUM_CURRENCY`. These are public build-time values — never put private
+   provider secrets in them.
 3. Push to `main` or run the workflow manually; the site is published at
    <https://kelvin1586.github.io/filetools/>.
 
@@ -126,7 +116,8 @@ should never be served over plain HTTP.
 1. Open the site, confirm the tool grid and pricing render.
 2. Resize a small PNG at 50% and download — open the result and check its dimensions.
 3. Open DevTools → Network, process any file, confirm **zero** requests carrying your file.
-4. Try the upgrade modal: the external link should point to your checkout URL, and your
-   license key should activate Premium.
+4. Try the upgrade modal: the link must open the Lemon Squeezy checkout. Enter an invalid
+   key → an error is shown and you stay Free. (A full purchase test requires a real key
+   from a Lemon Squeezy test-mode purchase.)
 
 For a full automated check, run the E2E suite against the build (`npm run test:e2e`).

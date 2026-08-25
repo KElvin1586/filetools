@@ -8,7 +8,8 @@
  */
 
 import { useEntitlement } from '../state/entitlement'
-import { DEV_TEST_MODE, DEV_PLAN_STORAGE_KEY, PLAN_STORAGE_KEY } from '../lib/entitlement'
+import { DEV_TEST_MODE, DEV_PLAN_STORAGE_KEY } from '../lib/entitlement'
+import { clearStoredLicense } from '../lib/license'
 import { getStorage } from '../lib/storage'
 
 export function TestCheckoutPage() {
@@ -28,8 +29,10 @@ export function TestCheckoutPage() {
   }
 
   const resetAll = () => {
-    getStorage().removeItem(PLAN_STORAGE_KEY)
-    getStorage().removeItem(DEV_PLAN_STORAGE_KEY)
+    const storage = getStorage()
+    clearStoredLicense(storage)
+    storage.removeItem(DEV_PLAN_STORAGE_KEY)
+    storage.removeItem('filetools.plan') // legacy key
     // Force is applied via context so the page still reflects current state.
     setDevForce?.(null)
     window.location.reload()

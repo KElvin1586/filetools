@@ -3,6 +3,40 @@
 All notable changes to FileTools are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] — 2026-08-25
+
+Real payments: Lemon Squeezy checkout + license activation.
+
+### Added — real licensing
+
+- Premium now activates through **Lemon Squeezy's real license API**
+  (`src/lib/license.ts`): the upgrade modal activates the customer's emailed key via
+  `/v1/licenses/activate`, stores the resulting device instance, and **revalidates on
+  every load** via `/v1/licenses/validate`. Disabled, expired, refunded, or fabricated
+  records stop unlocking Premium; forged localStorage records are discarded.
+- Deactivation (★ PREMIUM badge) calls `/v1/licenses/deactivate`, freeing the device
+  activation in Lemon Squeezy.
+- Offline grace: if the license server is unreachable, a previously activated license
+  keeps working.
+- Clear error states for invalid, disabled/revoked, expired, activation-limit, and
+  network failures.
+- The Upgrade button now opens the real Lemon Squeezy checkout; no placeholder or
+  fake checkout URLs remain anywhere in code, docs, or the production bundle.
+
+### Removed — legacy static key
+
+- `VITE_PREMIUM_LICENSE_KEY` / the shared static key mechanism is gone. There is no
+  client-side unlock flag; the legacy `filetools.plan` storage key is ignored and
+  removed on load.
+
+### Security
+
+- localStorage/URL/console tampering cannot unlock Premium — Premium exists only after
+  a license record revalidates against Lemon Squeezy (E2E-verified).
+- E2E: forged-record revocation, legacy-flag rejection, revoked-on-reload,
+  offline grace, deactivate/re-activate cycle — all against real API response shapes
+  captured from api.lemonsqueezy.com.
+
 ## [1.1.0] — 2026-08-24
 
 Commercial QA & freemium hardening release.

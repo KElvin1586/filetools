@@ -1,9 +1,8 @@
 /**
  * Premium entitlement logic — the single source of truth for FREE vs PREMIUM.
  * Pure functions here; the React provider lives in state/entitlement.tsx.
+ * License verification itself lives in lib/license.ts (Lemon Squeezy API).
  */
-
-import { config } from '../config'
 
 export type Plan = 'free' | 'premium'
 
@@ -30,7 +29,6 @@ export const PREMIUM_FEATURES: readonly PremiumFeature[] = Object.keys(
   FEATURE_LABELS,
 ) as PremiumFeature[]
 
-export const PLAN_STORAGE_KEY = 'filetools.plan'
 export const DEV_PLAN_STORAGE_KEY = 'filetools.plan.dev'
 
 /** Whether the dev-only premium test mode is available (never in production). */
@@ -42,18 +40,9 @@ export function canUseFeature(plan: Plan, feature: PremiumFeature): boolean {
   return plan === 'premium'
 }
 
+/** Normalizes user input before it is sent to the Lemon Squeezy license API. */
 export function normalizeLicenseKey(input: string): string {
   return input.trim().replace(/\s+/g, '').toUpperCase()
-}
-
-/** Validates a license key against the build-configured key. */
-export function isValidLicenseKey(input: string, expected: string = config.licenseKey): boolean {
-  const normalized = normalizeLicenseKey(input)
-  return normalized !== '' && normalized === normalizeLicenseKey(expected)
-}
-
-export function parseStoredPlan(raw: string | null): Plan {
-  return raw === 'premium' ? 'premium' : 'free'
 }
 
 /** Dev override accepts 'free' too; anything else = no override. */

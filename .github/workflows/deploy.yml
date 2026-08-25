@@ -40,12 +40,11 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Set these in repo Settings → Secrets and variables → Actions → Variables
-          # once you have a real checkout link. Never put private provider secrets here.
+          # Optional overrides — set in repo Settings → Secrets and variables →
+          # Actions → Variables. Never put private provider secrets here.
           VITE_UPGRADE_URL: ${{ vars.VITE_UPGRADE_URL }}
           VITE_PREMIUM_PRICE: ${{ vars.VITE_PREMIUM_PRICE }}
           VITE_PREMIUM_CURRENCY: ${{ vars.VITE_PREMIUM_CURRENCY }}
-          VITE_PREMIUM_LICENSE_KEY: ${{ vars.VITE_PREMIUM_LICENSE_KEY }}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

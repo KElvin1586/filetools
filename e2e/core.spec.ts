@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { unzipSync } from 'fflate'
-import { captureDownload, fixture, pngDimensions, unlockPremium } from './helpers'
+import { LS_CHECKOUT_URL, captureDownload, fixture, pngDimensions, stubLicenseApi, unlockPremium } from './helpers'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
@@ -139,31 +139,32 @@ test('FREEMIUM: free users cannot batch; premium unlocks batch + ZIP', async ({ 
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
   await expect(dialog).toContainText('$9.99')
-  // No checkout URL is configured in the default build — the upgrade CTA must be
-  // visibly disabled and must NEVER point to a placeholder domain.
+  // The upgrade CTA points at the REAL Lemon Squeezy checkout — never a placeholder.
   const upgradeCta = dialog.getByRole('link', { name: /Upgrade to Premium/i })
-  await expect(upgradeCta).toHaveAttribute('aria-disabled', 'true')
-  const href = await upgradeCta.getAttribute('href')
-  expect(href ?? '').not.toMatch(/example\.(com|org|net)/)
-  await expect(dialog).toContainText(/no checkout configured/i)
+  await expect(upgradeCta).toHaveAttribute('href', LS_CHECKOUT_URL)
 
-  // 2. Wrong key rejected.
-  await dialog.getByLabel('Have a license key?').fill('NOT-A-KEY')
+  // 2. Clicking Upgrade alone must NOT unlock Premium (it just opens checkout).
+  await expect(page.getByRole('button', { name: '★ PREMIUM' })).not.toBeVisible()
+
+  // 3. Wrong key rejected by the license server → stays Free.
+  await stubLicenseApi(page)
+  await dialog.getByLabel(/license key/i).fill('NOT-A-KEY')
   await dialog.getByRole('button', { name: 'Activate' }).click()
-  await expect(dialog.getByRole('alert')).toContainText(/not valid/i)
+  await expect(dialog.getByRole('alert')).toContainText(/not found/i)
+  await expect(page.getByRole('button', { name: '★ PREMIUM' })).not.toBeVisible()
 
-  // 3. Correct key unlocks premium.
-  await dialog.getByLabel('Have a license key?').fill('FILETOOLS-PREMIUM')
+  // 4. Valid key activates against the (stubbed) license server → Premium.
+  await dialog.getByLabel(/license key/i).fill('FT-E2E-TEST-KEY-1234-5678')
   await dialog.getByRole('button', { name: 'Activate' }).click()
   await expect(page.getByRole('button', { name: '★ PREMIUM' })).toBeVisible()
 
-  // 4. Batch now works end-to-end.
+  // 5. Batch now works end-to-end.
   await page.getByTestId('file-input').setInputFiles([fixture('red.png'), fixture('blue.png')])
   await expect(page.getByText('Selected (2)')).toBeVisible()
   await page.getByRole('button', { name: /Process 2 files/i }).click()
   await expect(page.getByText('Results (2)')).toBeVisible()
 
-  // 5. ZIP download contains two real resized PNGs.
+  // 6. ZIP download contains two real resized PNGs.
   const { buffer, filename } = await captureDownload(page, () =>
     page.getByRole('button', { name: /Download ZIP/i }).click(),
   )

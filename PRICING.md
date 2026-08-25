@@ -27,55 +27,49 @@ subscriptions, no accounts, no trials that silently convert.
 
 1. A Free user clicks any 🔒 PREMIUM control (or the **Upgrade** button).
 2. The upgrade modal shows the price and full Premium feature list.
-3. Clicking **Upgrade to Premium →** opens the **configured external checkout URL**
-   (`VITE_UPGRADE_URL`, set at build time). FileTools itself never processes payments and
-   never sees a card number.
-4. The checkout provider issues the customer a **license key**.
-5. The customer pastes the key into the modal's *Have a license key?* field → Premium is
-   active on that device (stored in `localStorage`, never sent anywhere).
+3. Clicking **Upgrade to Premium →** opens the **Lemon Squeezy checkout**
+   (payments are processed entirely by Lemon Squeezy — FileTools never sees a card).
+4. Lemon Squeezy emails the customer a **license key** after purchase.
+5. The customer pastes the key into the modal's license field. The app **activates the
+   key against Lemon Squeezy's real license API** (`/v1/licenses/activate`) and Premium
+   unlocks only on a genuine, activated license.
+6. On every subsequent load the stored license is **revalidated**
+   (`/v1/licenses/validate`): disabled, refunded, expired, or fabricated records stop
+   unlocking Premium. If the license server is unreachable, a previously activated
+   license keeps working (offline grace).
 
-If `VITE_UPGRADE_URL` is not configured, the Upgrade button renders as a clearly disabled
-button with an explanation — never a placeholder link, never a fake checkout.
+Tamper notes: there is **no static/shared license key** in the app, and no plain
+`premium` flag in storage — editing localStorage, URL parameters, or console variables
+cannot produce a license that survives revalidation. (As with any client-side software,
+the gate is enforcement-by-verification, not DRM: a determined user patching the JS
+bundle itself could bypass checks, which is true of every client-side-licensed app.)
 
-## Configuring price & checkout
+## Configuration
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `VITE_PREMIUM_PRICE` | `9.99` | Amount shown in the modal & pricing section |
 | `VITE_PREMIUM_CURRENCY` | `USD` | ISO 4217 display currency |
-| `VITE_UPGRADE_URL` | *(unset)* | Your real checkout/payment page |
-| `VITE_PREMIUM_LICENSE_KEY` | `FILETOOLS-PREMIUM` | Key customers enter to unlock Premium |
+| `VITE_UPGRADE_URL` | the live Lemon Squeezy checkout | Where the Upgrade button sends buyers |
 
-All four are build-time values (`.env`, see `.env.example`). Changing the price or checkout
+All are build-time values (`.env`, see `.env.example`). Changing the price or checkout
 URL requires a rebuild — there is no server to reconfigure.
 
-## Connecting a real payment provider
+**Never put Lemon Squeezy API keys, webhook signing secrets, or any payment credential
+in `VITE_*` variables** — they ship publicly in the frontend bundle. The license API
+used for activation needs no secret: it authenticates with the customer's key itself.
 
-No code changes are needed — only configuration:
+## Lemon Squeezy store setup (one-time, in your dashboard)
 
-1. **Create the product** in your chosen provider (Lemon Squeezy, Stripe, Paddle, Gumroad…)
-   as a one-time purchase.
-2. **Create the checkout/payment link** in the provider's dashboard and copy its URL.
-3. **Set `VITE_UPGRADE_URL` to that URL** in `.env`:
+For the full purchase → license-key flow, the product behind the checkout link must have
+license-key generation enabled:
 
-   ```bash
-   VITE_UPGRADE_URL=https://YOUR_REAL_CHECKOUT_URL
-   ```
+1. In the Lemon Squeezy dashboard, open the product/variant sold at the checkout URL.
+2. Enable **license key generation** for the variant, choose an activation limit
+   (e.g. 3 devices) and no expiry.
+3. Buyers then receive a license key by email automatically after purchase.
 
-4. **Rebuild** (`npm run build`) — build-time variables only take effect after a rebuild.
-5. **Test the checkout** with a real (or provider test-mode) purchase: the Upgrade button
-   should open your checkout, and the license key delivered to the buyer should activate
-   Premium in the modal.
-6. **Never put private API keys or payment secrets in `VITE_*` variables.** Anything named
-   `VITE_*` is embedded in the public frontend bundle. Provider secret keys belong only in
-   the provider dashboard or on your own backend.
-7. Configure the provider to deliver the license key to buyers (receipt email, post-purchase
-   page). Change `VITE_PREMIUM_LICENSE_KEY` to your own key, or extend `isValidLicenseKey`
-   in `src/lib/entitlement.ts` if you later want multiple keys or server-side verification.
-
-**Until `VITE_UPGRADE_URL` is set, purchasing is not possible** — the Upgrade button renders
-disabled with a plain configuration notice. The app never pretends checkout works before a
-real URL is supplied.
+Without this step, purchases succeed but buyers receive no key to activate.
 
 ## Development test mode — not a payment
 
@@ -88,12 +82,13 @@ plans without money:
 > ⚠️ **DEVELOPMENT TEST MODE ≠ REAL CUSTOMER PAYMENT.** Test Mode exists only so developers
 > can QA both plans locally. It is compiled out of production builds entirely
 > (`import.meta.env.DEV`), never ships to users, never claims a real payment occurred, and
-> never stores credentials. Real customers unlock Premium exclusively through the configured
-> checkout URL + license key.
+> never stores credentials. Real customers unlock Premium exclusively through the Lemon
+> Squeezy checkout + license key activation.
 
 ## Honesty notes
 
 - There is **no fake payment flow**: nothing simulates charging a card, and the UI never
   claims a payment happened.
-- Entitlement is client-side by design (see INSTALLATION.md). It is a convenience gate for a
-  static product, not a security boundary.
+- License checks are **real**: activation and revalidation call Lemon Squeezy's license
+  API. Premium cannot be unlocked by editing localStorage, URL parameters, or console
+  variables — a forged record fails revalidation and is discarded.

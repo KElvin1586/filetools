@@ -2,9 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   PREMIUM_FEATURES,
   canUseFeature,
-  isValidLicenseKey,
   normalizeLicenseKey,
-  parseStoredPlan,
   parseStoredPlanDev,
   DEV_TEST_MODE,
 } from '../lib/entitlement'
@@ -23,32 +21,14 @@ describe('canUseFeature — the central FREE|PREMIUM gate', () => {
   })
 })
 
-describe('license keys', () => {
-  it('normalizes case and whitespace', () => {
-    expect(normalizeLicenseKey('  abc-def \n GHI ')).toBe('ABC-DEFGHI')
+describe('normalizeLicenseKey', () => {
+  it('trims, uppercases and strips internal whitespace', () => {
+    expect(normalizeLicenseKey('  abc-def \n ghi ')).toBe('ABC-DEFGHI')
   })
-  it('accepts the configured key regardless of case/spacing', () => {
-    expect(isValidLicenseKey(config.licenseKey)).toBe(true)
-    expect(isValidLicenseKey(config.licenseKey.toLowerCase())).toBe(true)
-    expect(isValidLicenseKey(`  ${config.licenseKey}  `)).toBe(true)
-  })
-  it('rejects wrong and empty keys', () => {
-    expect(isValidLicenseKey('WRONG-KEY')).toBe(false)
-    expect(isValidLicenseKey('')).toBe(false)
-    expect(isValidLicenseKey('   ')).toBe(false)
+  it('returns empty string for blank input', () => {
+    expect(normalizeLicenseKey('   ')).toBe('')
   })
 })
-
-describe('parseStoredPlan', () => {
-  it('only accepts the exact premium marker', () => {
-    expect(parseStoredPlan('premium')).toBe('premium')
-    expect(parseStoredPlan('free')).toBe('free')
-    expect(parseStoredPlan('PREMIUM')).toBe('free')
-    expect(parseStoredPlan(null)).toBe('free')
-    expect(parseStoredPlan('{"plan":"premium"}')).toBe('free')
-  })
-})
-
 
 describe('dev test mode', () => {
   it('is only available in non-production builds', () => {
@@ -69,7 +49,15 @@ describe('upgrade URL configuration', () => {
     expect(config.upgradeUrl).not.toContain('example.org')
     expect(config.upgradeUrl).not.toContain('example.net')
   })
-  it('dev test checkout URL is present in dev builds', () => {
+  it('points at the real Lemon Squeezy checkout by default', () => {
+    expect(config.upgradeUrl).toBe(
+      'https://kelvindigitaltools.lemonsqueezy.com/checkout/buy/5a9a0680-dbb4-4c1b-b38c-02c8bbd20fe1',
+    )
+  })
+  it('has no static/shared license key anywhere in config', () => {
+    expect('licenseKey' in config).toBe(false)
+  })
+  it('dev test checkout URL is present in dev builds only', () => {
     expect(config.testUpgradeUrl).toBe('#/test-checkout')
   })
   it('premium pricing is configurable with sane defaults', () => {

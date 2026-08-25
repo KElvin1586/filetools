@@ -43,9 +43,10 @@ every premium capability. Free users are blocked from executing premium function
 - Processing history (last 25 jobs)
 - ZIP download of batch results
 
-Pricing, upgrade URL, limits and the demo license key are all configured via environment
-variables — see `.env.example`. There are **no fake payments**: the Upgrade button links to a
-configurable external checkout URL, and a license key activates Premium locally.
+Pricing, upgrade URL and limits are configured via environment variables — see
+`.env.example`. Payments run through the real **Lemon Squeezy** checkout, and Premium
+activates by verifying the emailed license key against Lemon Squeezy's license API
+(`src/lib/license.ts`) — no fake payments, no static keys.
 
 ## Quick start
 
@@ -90,8 +91,7 @@ elimination). They never claim a real payment occurred and never store credentia
 | --- | --- | --- |
 | `VITE_PREMIUM_PRICE` | `9.99` | One-time Premium price |
 | `VITE_PREMIUM_CURRENCY` | `USD` | Display currency |
-| `VITE_UPGRADE_URL` | *(unset)* | Your real external checkout page — never a placeholder |
-| `VITE_PREMIUM_LICENSE_KEY` | `FILETOOLS-PREMIUM` | Demo key that unlocks Premium |
+| `VITE_UPGRADE_URL` | the live Lemon Squeezy checkout | Where buyers pay |
 | `VITE_MAX_FILE_MB` | `50` | Per-file size limit |
 | `VITE_MAX_BATCH_FILES` | `50` | Max files per Premium batch |
 | `VITE_FREE_PDF_IMAGES_LIMIT` | `5` | Free images→PDF page limit |
