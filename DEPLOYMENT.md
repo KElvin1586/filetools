@@ -4,15 +4,36 @@ FileTools builds to a static folder (`dist/`): HTML, CSS, JS and one SVG icon. N
 runtime, database, or environment secrets are required. Anything that serves static files will
 work.
 
-## 1. Configure
+## 1. Configure — connecting a real checkout
 
-Create `.env` from `.env.example` and set at minimum:
+Everything commercial is configured at build time. In a fresh `.env` (copied from
+`.env.example`) the checkout URL is deliberately **unset**, which keeps the Upgrade button
+disabled with a plain "not configured" notice — no placeholder is ever shown to users.
 
-```bash
-VITE_UPGRADE_URL=https://your-checkout-page.example
-VITE_LICENSE_KEY=YOUR-REAL-LICENSE-KEY
-VITE_PREMIUM_PRICE=9.99
-```
+To go live with a real payment provider:
+
+1. **Create the product** in your chosen provider (Lemon Squeezy, Stripe, Paddle, Gumroad…).
+   One-time product, priced to match `VITE_PREMIUM_PRICE`/`VITE_PREMIUM_CURRENCY`.
+2. **Create the checkout/payment link** for that product in the provider's dashboard and
+   copy its URL.
+3. **Set `VITE_UPGRADE_URL` to that exact URL** in your `.env`:
+
+   ```bash
+   VITE_UPGRADE_URL=https://YOUR_REAL_CHECKOUT_URL
+   VITE_PREMIUM_LICENSE_KEY=YOUR-REAL-LICENSE-KEY
+   VITE_PREMIUM_PRICE=9.99
+   VITE_PREMIUM_CURRENCY=USD
+   ```
+
+4. **Rebuild the application** (`npm run build`) — `VITE_*` values are baked into the
+   bundle; editing `.env` alone changes nothing until you rebuild.
+5. **Test the checkout** end-to-end: deploy, open the upgrade modal, click *Upgrade to
+   Premium →*, run a test purchase in your provider's sandbox/test mode, and confirm the
+   license key you distribute activates Premium in the modal.
+6. **Never put private API keys, signing secrets, or payment credentials into `VITE_*`
+   variables** — they ship publicly in the frontend bundle. Only public URLs and the
+   (public-by-design) license key belong there. Keep private provider credentials in the
+   provider dashboard or on your own server, never in this codebase.
 
 Env vars are baked into the bundle at build time — rebuild after changing them.
 

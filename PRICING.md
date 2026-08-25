@@ -49,26 +49,47 @@ button with an explanation — never a placeholder link, never a fake checkout.
 All four are build-time values (`.env`, see `.env.example`). Changing the price or checkout
 URL requires a rebuild — there is no server to reconfigure.
 
-## Connecting a real payment provider later
+## Connecting a real payment provider
 
 No code changes are needed — only configuration:
 
-1. Create a checkout with your provider (Lemon Squeezy, Stripe Payment Link, Paddle, Gumroad…).
-2. Set `VITE_UPGRADE_URL` to that checkout URL and rebuild.
-3. Configure the provider to deliver the license key to buyers (e.g. in the receipt email or
-   post-purchase redirect page).
-4. Change `VITE_PREMIUM_LICENSE_KEY` to your own key, or extend `isValidLicenseKey` in
-   `src/lib/entitlement.ts` if you later want multiple keys or server-side verification.
+1. **Create the product** in your chosen provider (Lemon Squeezy, Stripe, Paddle, Gumroad…)
+   as a one-time purchase.
+2. **Create the checkout/payment link** in the provider's dashboard and copy its URL.
+3. **Set `VITE_UPGRADE_URL` to that URL** in `.env`:
 
-## Development test mode
+   ```bash
+   VITE_UPGRADE_URL=https://YOUR_REAL_CHECKOUT_URL
+   ```
+
+4. **Rebuild** (`npm run build`) — build-time variables only take effect after a rebuild.
+5. **Test the checkout** with a real (or provider test-mode) purchase: the Upgrade button
+   should open your checkout, and the license key delivered to the buyer should activate
+   Premium in the modal.
+6. **Never put private API keys or payment secrets in `VITE_*` variables.** Anything named
+   `VITE_*` is embedded in the public frontend bundle. Provider secret keys belong only in
+   the provider dashboard or on your own backend.
+7. Configure the provider to deliver the license key to buyers (receipt email, post-purchase
+   page). Change `VITE_PREMIUM_LICENSE_KEY` to your own key, or extend `isValidLicenseKey`
+   in `src/lib/entitlement.ts` if you later want multiple keys or server-side verification.
+
+**Until `VITE_UPGRADE_URL` is set, purchasing is not possible** — the Upgrade button renders
+disabled with a plain configuration notice. The app never pretends checkout works before a
+real URL is supplied.
+
+## Development test mode — not a payment
 
 Development builds (`npm run dev`) include an isolated **Test Mode** for exercising both
 plans without money:
 
 - **🧪 TEST toggle** in the header forces the whole app into Premium or Free.
 - **`#/test-checkout`** is an internal page simulating the "return from payment" step.
-- Both are compiled out of production builds (`import.meta.env.DEV`); they never ship to
-  users, never claim a real payment occurred, and never store credentials.
+
+> ⚠️ **DEVELOPMENT TEST MODE ≠ REAL CUSTOMER PAYMENT.** Test Mode exists only so developers
+> can QA both plans locally. It is compiled out of production builds entirely
+> (`import.meta.env.DEV`), never ships to users, never claims a real payment occurred, and
+> never stores credentials. Real customers unlock Premium exclusively through the configured
+> checkout URL + license key.
 
 ## Honesty notes
 
